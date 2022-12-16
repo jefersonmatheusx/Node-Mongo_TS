@@ -2,5 +2,5 @@
 dist/
 **/**/*.log
 data/
-env/
 .env
+env/*.env
