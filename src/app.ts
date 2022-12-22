@@ -11,7 +11,7 @@ import EnvVars from '@src/declarations/major/EnvVars'
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes'
 import { NodeEnvs } from '@src/declarations/enums'
 import { RouteError } from '@src/declarations/classes'
-
+import { register } from './routes'
 import { SESSION_OPTIONS } from './config'
 
 export const createApp = (store: Store) => {
@@ -41,8 +41,18 @@ export const createApp = (store: Store) => {
   }
 
   // **** Add API routes **** //
-
+  app.use(register)
   // Add APIs
+  app.use((req, res, next) => {
+    res.status(404).json({ message: 'Not Found' })
+  })
+
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    if (!err.status) {
+      console.error(err.stack)
+    }
+    res.status(err.status || 500).json({ message: err.message || 'Internal server error.' })
+  })
 
   // Setup error handler
   app.use(
