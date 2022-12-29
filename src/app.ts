@@ -1,7 +1,9 @@
+import { serverError, notFound } from './middleware/errors'
+
 import morgan from 'morgan'
 import path from 'path'
 import helmet from 'helmet'
-import express, { Request, Response, NextFunction } from 'express'
+import express, { Request, Response } from 'express'
 import 'express-async-errors'
 import logger from 'jet-logger'
 import cookieParser from 'cookie-parser'
@@ -42,35 +44,12 @@ export const createApp = (store: Store) => {
 
   // **** Add API routes **** //
   app.use(register)
-  // Add APIs
-  app.use((req, res, next) => {
-    res.status(404).json({ message: 'Not Found' })
-  })
 
-  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    if (!err.status) {
-      console.error(err.stack)
-    }
-    res.status(err.status || 500).json({ message: err.message || 'Internal server error.' })
-  })
+  // Add APIs
+  app.use(notFound)
 
   // Setup error handler
-  app.use(
-    (
-      err: Error,
-      _: Request,
-      res: Response,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      next: NextFunction,
-    ) => {
-      logger.err(err, true)
-      let status = HttpStatusCodes.BAD_REQUEST
-      if (err instanceof RouteError) {
-        status = err.status
-      }
-      return res.status(status).json({ error: err.message })
-    },
-  )
+  app.use(serverError)
 
   // **** Serve front-end content **** //
 
