@@ -16,8 +16,8 @@ curl -X POST localhost:3000/register --cookie 'SID=s%3AX4vRrnxMn49iwafTGNObwGqQ0
 ```
 
 # access individual docker container
-- mongo
-1- `docker exec -it mongodb bash`
+- mongo (ensure finish local mongodb instances outside of containers)
+1- `docker exec -it mongodb bash` 
 2- mongosh (entrou no banco)
 3- use auth
 4- db.auth(<user>,passwordPrompt())
@@ -26,13 +26,20 @@ curl -X POST localhost:3000/register --cookie 'SID=s%3AX4vRrnxMn49iwafTGNObwGqQ0
 - redis
 1- docker exec -it redis_cache redis-cli -a secret
 2- scan 0
-3- get "session:..."/ ttl "session..."
+3- get "session:..."/ ttl "session..." / del "session..."
 
 # curl routes
 * -v = 
 * -H = 
 * -d = data
   ```sh /register -d '{
+      "email": "teste@gmail.com",
+      "name": "jeff",
+      "password": "Secret123",
+      "passwordConfirmation": "Secret123"
+  }' ```
+
+  ```sh /login -d '{
       "email": "teste@gmail.com",
       "name": "jeff",
       "password": "Secret123",

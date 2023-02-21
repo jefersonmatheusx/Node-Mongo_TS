@@ -13,7 +13,7 @@ import EnvVars from '@src/declarations/major/EnvVars'
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes'
 import { NodeEnvs } from '@src/declarations/enums'
 import { RouteError } from '@src/declarations/classes'
-import { register } from './routes'
+import { home, logIn, register } from './routes'
 import { SESSION_OPTIONS } from './config'
 
 export const createApp = (store: Store) => {
@@ -44,6 +44,8 @@ export const createApp = (store: Store) => {
 
   // **** Add API routes **** //
   app.use(register)
+  app.use(logIn)
+  app.use(home)
 
   // Add APIs
   app.use(notFound)
