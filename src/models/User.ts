@@ -1,3 +1,5 @@
+import { BCRYPT_WORK_FACTOR } from './../config/auth'
+import { hash } from 'bcrypt'
 import { Schema, model, Document } from 'mongoose'
 
 export interface UserDocument extends Document {
@@ -11,10 +13,16 @@ const userSchema = new Schema(
     email: String,
     name: String,
     password: String,
-  },
+  }, 
   {
     timestamps: true,
   },
 )
 
-export  const User = model<UserDocument>('User', userSchema)
+userSchema.pre<UserDocument>('save', async function () {
+  if (this.isModified('password')) {
+    this.password = await hash(this.password, BCRYPT_WORK_FACTOR)
+  }
+})
+
+export const User = model<UserDocument>('User', userSchema)
